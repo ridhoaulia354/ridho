@@ -1,32 +1,97 @@
-# Prerequisites
-*.d
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+using namespace std;
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+// Struktur untuk data bahan baku
+struct BahanBaku {
+    int id;
+    string nama;
+    int stok; // Stok bahan baku
+};
 
-# Precompiled Headers
-*.gch
-*.pch
+// Fungsi untuk menambahkan bahan baku ke inventaris
+void tambahBahan(vector<BahanBaku>& inventaris) {
+    BahanBaku bahanBaru;
+    cout << "Masukkan ID Bahan Baku: ";
+    cin >> bahanBaru.id;
+    cin.ignore(); // Membersihkan buffer input
+    cout << "Masukkan Nama Bahan Baku: ";
+    getline(cin, bahanBaru.nama);
+    cout << "Masukkan Jumlah Stok Awal: ";
+    cin >> bahanBaru.stok;
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+    inventaris.push_back(bahanBaru);
+    cout << "Bahan baku berhasil ditambahkan ke inventaris!" << endl;
+}
 
-# Fortran module files
-*.mod
-*.smod
+// Fungsi untuk mengurangi stok bahan baku
+void kurangiStok(vector<BahanBaku>& inventaris) {
+    int id, jumlah;
+    cout << "Masukkan ID Bahan Baku yang ingin dikurangi: ";
+    cin >> id;
+    cout << "Masukkan Jumlah yang Dikurangi: ";
+    cin >> jumlah;
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+    for (auto& bahan : inventaris) {
+        if (bahan.id == id) {
+            if (bahan.stok >= jumlah) {
+                bahan.stok -= jumlah;
+                cout << "Stok berhasil dikurangi. Stok tersisa: " << bahan.stok << endl;
+            } else {
+                cout << "Stok tidak mencukupi untuk pengurangan ini!" << endl;
+            }
+            return;
+        }
+    }
+    cout << "Bahan baku dengan ID tersebut tidak ditemukan." << endl;
+}
 
-# Executables
-*.exe
-*.out
-*.app
+// Fungsi untuk menampilkan seluruh inventaris bahan baku
+void tampilkanInventaris(const vector<BahanBaku>& inventaris) {
+    cout << "\n=== Daftar Inventaris Bahan Baku ===" << endl;
+    cout << left << setw(10) << "ID"
+         << setw(20) << "Nama Bahan"
+         << setw(10) << "Stok" << endl;
+
+    for (const auto& bahan : inventaris) {
+        cout << left << setw(10) << bahan.id
+             << setw(20) << bahan.nama
+             << setw(10) << bahan.stok << endl;
+    }
+}
+
+int main() {
+    vector<BahanBaku> inventaris;
+    int pilihan;
+
+    do {
+        cout << "\n=== Sistem Manajemen Inventaris Bahan Baku ===" << endl;
+        cout << "1. Tambah Bahan Baku" << endl;
+        cout << "2. Kurangi Stok Bahan Baku" << endl;
+        cout << "3. Tampilkan Inventaris" << endl;
+        cout << "4. Keluar" << endl;
+        cout << "Pilih opsi: ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+            case 1:
+                tambahBahan(inventaris);
+                break;
+            case 2:
+                kurangiStok(inventaris);
+                break;
+            case 3:
+                tampilkanInventaris(inventaris);
+                break;
+            case 4:
+                cout << "Keluar dari program." << endl;
+                break;
+            default:
+                cout << "Pilihan tidak valid." << endl;
+        }
+    } while (pilihan != 4);
+
+    return 0;
+}
